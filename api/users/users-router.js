@@ -3,6 +3,12 @@ const bcrypt = require("bcrypt");
 const Users = require("./users-model");
 const jwt = require("jsonwebtoken");
 const { jwtSecret } = require("../../config/secrets");
+const {
+  registrationPayload,
+  loginPayload,
+  uniqueEmail,
+  validUsername,
+} = require("../middleware/users-middleware");
 
 router.get("/", (req, res) => {
   Users.get()
@@ -24,7 +30,7 @@ router.get("/:id", (req, res) => {
     });
 });
 
-router.post("/register", (req, res) => {
+router.post("/register", registrationPayload, uniqueEmail, (req, res) => {
   const details = req.body;
 
   const hashedPass = bcrypt.hashSync(details.password, 12);
@@ -39,7 +45,7 @@ router.post("/register", (req, res) => {
     });
 });
 
-router.post("/login", async (req, res) => {
+router.post("/login", loginPayload, validUsername, async (req, res) => {
   const { username, password } = req.body;
   try {
     const checkingUser = await Users.getBy({ username }).first();
