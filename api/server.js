@@ -5,7 +5,7 @@ const helmet = require('helmet');
 // const restrict = require('./middleware/index');
 
 // const issuesRouter = require('./issues/issues-router.js');
-// const usersRouter = require('./users/users-router.js');
+const usersRouter = require('./users/users-router.js');
 
 const server = express();
 
@@ -14,6 +14,6 @@ server.use(cors());
 server.use(express.json());
 
 // server.use('/api/issues', issuesRouter);
-// server.use('/api/users', usersRouter);
+server.use('/api/users', usersRouter);
 
 module.exports = server;
