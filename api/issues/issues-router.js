@@ -32,9 +32,19 @@ router.post("/", validBody, (req, res) => {
 });
 
 router.put("/:id", validBody, (req, res) => {
-  Issue.change(req.params.id, req.body)
-    .then((updated) => {
-      res.status(201).json(updated);
+  const { id } = req.params;
+  const changes = req.body;
+
+  Issue.getById(id)
+    .then(issue => {
+      if(issue){
+        return Issue.change(id, changes)
+      } else {
+        res.status(404).json({ message: `Could not find issue with id ${id}` });
+      }
+    })
+    .then(updatedIssue => {
+      res.status(201).json(updatedIssue);
     })
     .catch((err) => {
       res.status(500).json({ error: err.message });
@@ -42,7 +52,6 @@ router.put("/:id", validBody, (req, res) => {
 });
 
 router.delete("/:id", (req, res) => {
-  const { id } = req.params.id;
   Issue.remove(req.params.id)
     .then((deleted) => {
       if (deleted) {
