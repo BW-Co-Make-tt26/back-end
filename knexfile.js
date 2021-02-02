@@ -1,23 +1,29 @@
-const sharedConfig = {
-  client: 'sqlite3',
-  useNullAsDefault: true,
-  migrations: { directory: './data/migrations' },
-  pool: { afterCreate: (conn, done) => conn.run('PRAGMA foreign_keys = ON', done) },
+const pg = require("pg");
+require("dotenv").config();
+
+const localConnection = process.env.localConnectionpwd;
+// const localConnection = "http://localhost:5000";
+
+let connection;
+
+if (process.env.DATABASE_URL) {
+  pg.defaults.ssl = { rejectUnauthorized: false };
+  connection = process.env.DATABASE_URL;
+} else {
+  connection = localConnection;
 }
 
+const sharedConfig = {
+  client: "pg",
+  connection,
+  migrations: { directory: "./data/migrations" },
+  seeds: { directory: "./data/seeds" },
+};
+
 module.exports = {
-  development: {
-    ...sharedConfig,
-    connection: { filename: './data/BWdata.db3' },
-    seeds: { directory: './data/seeds' },
-  },
-  testing: {
-    ...sharedConfig,
-    connection: { filename: './data/test.db3' },
-  },
+  development: { ...sharedConfig },
   production: {
     ...sharedConfig,
-    connection: { filename: './data/BWdata.db3' },
-    seeds: { directory: './data/seeds' },
+    pool: { min: 2, max: 10 },
   },
 };
