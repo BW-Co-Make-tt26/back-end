@@ -47,11 +47,12 @@ router.post("/register", registrationPayload, uniqueEmail, (req, res) => {
 
 router.post("/login", loginPayload, validUsername, async (req, res) => {
   const { username, password } = req.body;
+  const data = await Users.getUser({ username }).first();
   try {
     const checkingUser = await Users.getBy({ username }).first();
     if (checkingUser && bcrypt.compareSync(password, checkingUser.password)) {
       const token = generateToken(checkingUser);
-      res.json({ message: "welcome back", token });
+      res.json({ message: "welcome back", token, data });
     } else {
       res.status(401).json({ message: "invalid credentials" });
     }
