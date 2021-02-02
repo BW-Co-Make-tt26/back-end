@@ -17,6 +17,11 @@ function getById(id) {
   return db("users").where("user_id", id).first();
 }
 async function add(user) {
-  const newUserId = await db("users").insert(user);
-  return getById(newUserId);
+  // const newUser = user.username
+  // console.log(newUser);
+  // await db("users").insert(user)
+  // const returned = await db("users").where("username", newUser).first();
+  // return returned;
+  const newUser = await db("users").insert(user).returning('*');
+  return newUser[0];
 }

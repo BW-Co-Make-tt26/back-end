@@ -9,8 +9,8 @@ module.exports = {
 };
 
 async function add(issue) {
-  const newIssueId = await db("issues").insert(issue);
-  return getById(newIssueId);
+  const newIssue = await db("issues").insert(issue).returning('*');
+  return newIssue[0];
 }
 function get() {
   return db("issues");
