@@ -6,6 +6,7 @@ module.exports = {
   add,
   change,
   remove,
+  getUpvotes
 };
 
 async function add(issue) {
@@ -17,6 +18,9 @@ function get() {
 }
 function getById(id) {
   return db("issues").where("id", id).first();
+}
+function getUpvotes(id) {
+  return db("issues").where("id", id).first().select("id as issue_id", "upvotes");
 }
 function change(id, changes) {
   return db("issues")
