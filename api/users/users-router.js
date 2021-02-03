@@ -38,7 +38,7 @@ router.post("/register", registrationPayload, uniqueEmail, (req, res) => {
 
   Users.add(details)
     .then((user) => {
-      res.status(200).json(user);
+      res.status(201).json(user);
     })
     .catch((err) => {
       res.status(500).json({ error: err.message });
